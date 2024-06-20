@@ -1,0 +1,444 @@
+/* App.css */
+
+/* General body styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #8a2be2; /* Violet background color */
+  color: white; /* White text for contrast */
+  line-height: 1.6; /* Improved readability */
+}
+
+/* General code styles */
+code {
+  font-family: 'Fira Code', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  background-color: #1e1e1e; /* Dark background for code */
+  color: #dcdcdc; /* Light text color for contrast */
+  padding: 2px 4px; /* Padding around code for better readability */
+  border-radius: 4px; /* Rounded corners for modern look */
+}
+
+/* Additional global styles for a modern touch */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 10px 0;
+  font-weight: 500; /* Semi-bold for headers */
+}
+
+p {
+  margin: 0 0 10px;
+  padding: 0;
+}
+
+a {
+  color: #801db9; /* Spotify green for links */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #801db9; /* Lighter green on hover */
+}
+
+ul, ol {
+  margin: 0;
+  padding: 0 0 0 20px; /* Indent lists for better readability */
+}
+
+button {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Ensure consistent spacing */
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Add responsive typography */
+html {
+  font-size: 16px;
+}
+
+@media (max-width: 1200px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 992px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 576px) {
+  html {
+    font-size: 12px;
+  }
+}
+
+/* Header styles */
+.App-header {
+  background-color: #801db9; /* Spotify green */
+  height: 64px; /* Fixed height for header */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px; /* Default padding */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  width: 100%; /* Ensure header spans full width */
+  position: fixed; /* Fixed position */
+  top: 0; /* Stick to top */
+  z-index: 1000; /* Ensure it stays on top */
+}
+
+/* Adjust margin for header links */
+.header-links {
+  display: flex;
+  gap: 20px; /* Space between links/buttons */
+  margin-left: 10px; /* Adjusted margin to move buttons more to the left */
+}
+
+.header-link {
+  color: white; /* White text color */
+  text-decoration: none; /* Remove underline */
+  font-size: 16px; /* Font size */
+  font-weight: 500; /* Semi-bold */
+  padding: 10px 15px; /* Padding for clickable area */
+  border-radius: 4px; /* Rounded corners */
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.header-link:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Light background on hover */
+}
+
+.header-link:focus {
+  outline: none; /* Remove default focus outline */
+  background-color: rgba(255, 255, 255, 0.2); /* Slightly darker background on focus */
+}
+
+/* Additional styles for Favourites and Home buttons */
+.favorites-button,
+.home-button {
+  background-color: #661db9; /* Spotify green */
+  color: white; /* White text */
+  border: none; /* Remove default border */
+  padding: 10px 20px; /* Padding for button */
+  border-radius: 20px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor */
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+/* Button styles */
+.button {
+  background: linear-gradient(135deg, #ff69b4, #ff1493); /* Gradient pink background */
+  color: white; /* White text */
+  border: none; /* Remove default border */
+  padding: 10px 20px; /* Padding for button */
+  border-radius: 25px; /* More rounded corners */
+  cursor: pointer; /* Pointer cursor */
+  transition: background 0.3s ease, transform 0.2s ease; /* Smooth transition for background and transform */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  font-size: 16px; /* Font size */
+  font-weight: 600; /* Semi-bold font weight */
+}
+
+.button:hover {
+  background: linear-gradient(135deg, #ff85c4, #ff69b4); /* Lighter gradient pink on hover */
+  transform: translateY(-2px); /* Slight lift effect on hover */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Slightly larger shadow on hover */
+}
+
+.button:focus {
+  outline: none; /* Remove default focus outline */
+  background: linear-gradient(135deg, #ff85c4, #ff69b4); /* Maintain hover color on focus */
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.5); /* Pink outline on focus */
+}
+
+.button:disabled {
+  opacity: 0.5; /* Reduce opacity */
+  cursor: not-allowed; /* Change cursor */
+  background: linear-gradient(135deg, #ff69b4, #ff1493); /* Maintain gradient background */
+}
+
+.favorites-button:disabled,
+.home-button:disabled {
+  opacity: 0.5; /* Reduce opacity */
+  cursor: not-allowed; /* Change cursor */
+}
+
+/* Sidebar styles */
+.Sidebar {
+  background-color: #333; /* Dark background */
+  color: white; /* White text */
+  width: 200px; /* Sidebar width */
+  height: 100vh; /* Full height */
+  position: fixed; /* Fixed position */
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  padding-top: 64px; /* Same as header height to push content below */
+}
+
+.Sidebar a {
+  color: white; /* White links */
+  text-decoration: none;
+  padding: 15px 20px;
+  display: block;
+  transition: background-color 0.3s ease;
+}
+
+.Sidebar a:hover {
+  background-color: #555; /* Darker background on hover */
+}
+
+/* MainContent styles */
+.MainContent {
+  margin-left: 250px; /* Adjusted for sidebar width */
+  padding-top: 64px; /* Same as header height */
+}
+
+/* PodcastListContainer styles */
+.PodcastListContainer {
+  padding: 20px;
+}
+
+/* PodcastList styles */
+.PodcastList {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* Five columns with equal width */
+  grid-gap: 20px; /* Gap between items */
+}
+
+/* PodcastItem styles */
+.PodcastItem {
+  background-color: #333; /* Dark background */
+  padding: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.PodcastItem:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+}
+
+.PodcastItemImage {
+  width: 100%; /* Full width */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 8px; /* Rounded corners */
+}
+
+.PodcastDetails {
+  margin-top: 10px;
+}
+
+.PodcastItemTitle {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.PodcastItemSeasons,
+.PodcastItemGenres {
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+
+/* SortOptions styles */
+.SortOptions {
+  margin-bottom: 20px;
+}
+
+.SortOptions label {
+  margin-right: 10px;
+}
+
+.SortOptions select {
+  padding: 8px;
+  font-size: 16px;
+}
+
+/* Placeholder audio track styles */
+.PlaceholderAudio {
+  background-color: #ff85c4; /* Pink background color */
+  color: white; /* White text color */
+  padding: 10px; /* Padding */
+  border-radius: 8px; /* Rounded corners */
+  text-align: center; /* Center text */
+  margin-bottom: 20px; /* Bottom margin */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .MainContent {
+    margin-left: 200px; /* Adjusted for sidebar width */
+  }
+  
+  .PodcastList {
+    grid-template-columns: repeat(4, 1fr); /* Adjust for four columns on smaller screens */
+  }
+}
+
+@media (max-width: 992px) {
+  .MainContent {
+    margin-left: 150px; /* Adjusted for sidebar width */
+  }
+  
+  .PodcastList {
+    grid-template-columns: repeat(3, 1fr); /* Adjust for three columns on even smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .MainContent {
+    margin-left: 0; /* No margin for main content */
+  }
+  
+  .PodcastList {
+    grid-template-columns: repeat(2, 1fr); /* Adjust for two columns on mobile screens */
+  }
+}
+
+@media (max-width: 576px) {
+  .MainContent {
+    margin-left: 0; /* No margin for main content */
+  }
+  
+  .PodcastList {
+    grid-template-columns: repeat(1, 1fr); /* Adjust for single column on smallest screens */
+  }
+}
+
+/* Adjust genre filter position */
+.filter-container {
+  display: flex;
+  align-items: center;
+  margin-left: 20px; /* Adjusted margin */
+}
+
+.genre-filter {
+  padding: 8px;
+  font-size: 16px;
+}
+
+/* Enhanced Player styles */
+.Player {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #1e1e1e; /* Dark background for the player */
+  color: white; /* White text color */
+  border: 1px solid #444; /* Dark border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slightly larger shadow */
+  padding: 20px;
+  width: 300px;
+  max-width: 90%;
+  display: flex;
+  flex-direction: column; /* Aligns elements vertically */
+  border-radius: 10px; /* Rounded corners */
+  transition: transform 0.3s ease; /* Smooth transition */
+}
+
+.Player:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+}
+
+.PlayerControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px; /* Increased spacing between controls and progress bar */
+}
+
+.PlayerControls button {
+  background-color: #ff85c4; /* Pink background color */
+  color: white; /* White text color */
+  border: none; /* Remove default border */
+  padding: 10px 15px; /* Padding for button */
+  border-radius: 20px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition */
+}
+
+.PlayerControls button:hover {
+  background-color: #ff69b4; /* Lighter pink on hover */
+  transform: translateY(-2px); /* Slight lift effect on hover */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow on hover */
+}
+
+.PlayerProgress {
+  width: 100%;
+  height: 8px;
+  background-color: #444; /* Darker background for progress bar */
+  border-radius: 4px; /* Rounded corners */
+  overflow: hidden; /* Hide overflow for rounded corners */
+}
+
+.PlayerProgress .progress {
+  height: 100%;
+  background-color: #ff85c4; /* Pink progress color */
+  transition: width 0.2s ease; /* Smooth transition for progress */
+}
+
+/* Responsive adjustments for player */
+@media (max-width: 576px) {
+  .Player {
+    width: 100%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 0; /* Remove rounded corners for full-width player */
+  }
+
+  .PlayerControls {
+    flex-direction: column; /* Stack controls vertically */
+    gap: 10px; /* Space between buttons */
+  }
+}
+
+.carousel-container {
+  padding: 20px;
+  margin-top: 80px; /* Adjust for header */
+  background-color: #1e1e1e; /* Dark background */
+  color: white; /* White text */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.carousel-container h2 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.carousel-item {
+  padding: 10px;
+  text-align: center;
+}
+
+.carousel-item-image {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .carousel-container {
+    margin-top: 60px; /* Adjust for smaller screens */
+  }
+}
+
