@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PodcastLists from './Components/podcastLists.jsx';
 import PodcastDetails from './Components/podcastDetails.jsx';
 import AudioPlayer from './Components/audioPlayer.jsx';
@@ -26,7 +26,6 @@ const App = () => {
         <header className="App-header">
           <h1 className="header-text">PodCastaway</h1>
           <nav className="App-nav">
-
             <div className="filter-container">
               <select
                 className="genre-filter"

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import '../App.css';
@@ -11,18 +11,7 @@ const PodcastDetail = ({ setCurrentEpisode }) => {
   const [selectedSeason, setSelectedSeason] = useState(0);
   const [seasonDropdownOpen, setSeasonDropdownOpen] = useState(false);
 
-  useEffect(() => {
-    fetchPodcastDetails();
-  }, [id]);
-
-  useEffect(() => {
-    const storedFavorites = localStorage.getItem('favorites');
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
-    }
-  }, []);
-
-  const fetchPodcastDetails = async () => {
+  const fetchPodcastDetails = useCallback(async () => {
     try {
       const response = await fetch(`https://podcast-api.netlify.app/id/${id}`);
       if (!response.ok) {
@@ -48,7 +37,18 @@ const PodcastDetail = ({ setCurrentEpisode }) => {
     } catch (error) {
       console.error('Error fetching podcast details:', error);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchPodcastDetails();
+  }, [fetchPodcastDetails]);
+
+  useEffect(() => {
+    const storedFavorites = localStorage.getItem('favorites');
+    if (storedFavorites) {
+      setFavorites(JSON.parse(storedFavorites));
+    }
+  }, []);
 
   const toggleFavorite = (episode) => {
     if (!podcast) return;
@@ -57,17 +57,17 @@ const PodcastDetail = ({ setCurrentEpisode }) => {
     const { id: episodeId } = episode;
     const seasonId = seasons[selectedSeason].id;
 
-    const isFavorited = favorites.some(fav =>
-      fav.podcastId === podcastId &&
-      fav.seasonId === seasonId &&
-      fav.episodeId === episodeId
+    const isFavorited = favorites.some(
+      (fav) =>
+        fav.podcastId === podcastId &&
+        fav.seasonId === seasonId &&
+        fav.episodeId === episodeId
     );
 
     const updatedFavorites = isFavorited
-      ? favorites.filter(fav =>
-          !(fav.podcastId === podcastId &&
-            fav.seasonId === seasonId &&
-            fav.episodeId === episodeId)
+      ? favorites.filter(
+          (fav) =>
+            !(fav.podcastId === podcastId && fav.seasonId === seasonId && fav.episodeId === episodeId)
         )
       : [
           ...favorites,
@@ -90,7 +90,7 @@ const PodcastDetail = ({ setCurrentEpisode }) => {
   };
 
   const isFavorite = (episodeId) => {
-    return favorites.some(fav => fav.episodeId === episodeId);
+    return favorites.some((fav) => fav.episodeId === episodeId);
   };
 
   if (!podcast) {
@@ -127,8 +127,12 @@ const PodcastDetail = ({ setCurrentEpisode }) => {
 
 const Sidebar = () => (
   <div className="Sidebar">
-    <Link to="/" className="SidebarLink">Home</Link>
-    <Link to="/favorites" className="SidebarLink">Favorites</Link>
+    <Link to="/" className="SidebarLink">
+      Home
+    </Link>
+    <Link to="/favorites" className="SidebarLink">
+      Favorites
+    </Link>
   </div>
 );
 
@@ -140,7 +144,13 @@ const PodcastInfo = ({ podcast }) => (
   </>
 );
 
-const SeasonSelector = ({ podcast, selectedSeason, seasonDropdownOpen, handleSeasonChange, setSeasonDropdownOpen }) => (
+const SeasonSelector = ({
+  podcast,
+  selectedSeason,
+  seasonDropdownOpen,
+  handleSeasonChange,
+  setSeasonDropdownOpen,
+}) => (
   <div className="SeasonSelector">
     <button onClick={() => setSeasonDropdownOpen(!seasonDropdownOpen)} className="SeasonButton">
       {podcast.seasons[selectedSeason].title}
@@ -162,7 +172,13 @@ const SeasonSelector = ({ podcast, selectedSeason, seasonDropdownOpen, handleSea
   </div>
 );
 
-const PodcastSeason = ({ podcast, selectedSeason, setCurrentEpisode, toggleFavorite, isFavorite }) => (
+const PodcastSeason = ({
+  podcast,
+  selectedSeason,
+  setCurrentEpisode,
+  toggleFavorite,
+  isFavorite,
+}) => (
   <div className="PodcastSeason">
     <h3>{podcast.seasons[selectedSeason].title}</h3>
     {podcast.seasons[selectedSeason].previewImage && (
@@ -198,11 +214,16 @@ const PodcastSeason = ({ podcast, selectedSeason, setCurrentEpisode, toggleFavor
   </div>
 );
 
-const EpisodeItem = ({ episode, index, setCurrentEpisode, toggleFavorite, isFavorite, podcastId, seasonId }) => (
-  <div
-    className="Episode"
-    onClick={() => setCurrentEpisode(episode)}
-  >
+const EpisodeItem = ({
+  episode,
+  index,
+  setCurrentEpisode,
+  toggleFavorite,
+  isFavorite,
+  podcastId,
+  seasonId,
+}) => (
+  <div className="Episode" onClick={() => setCurrentEpisode(episode)}>
     <span className="EpisodeNumber">{index + 1}.</span>
     <span className="EpisodeTitle">{episode.title}</span>
     <button

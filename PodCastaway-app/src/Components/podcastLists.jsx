@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchPreviews } from '../services/Api';
 import Slider from 'react-slick';
@@ -16,15 +16,18 @@ const PodcastList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchPodcastDetails();
+    fetchPodcastPreviews();
   }, [sortBy]);
 
-  const fetchPodcastDetails = async () => {
+  const fetchPodcastPreviews = useCallback(async () => {
     try {
       const data = await fetchPreviews();
       const podcastDetails = await Promise.all(
         data.map(async (podcast) => {
           const response = await fetch(`https://podcast-api.netlify.app/id/${podcast.id}`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch podcast details');
+          }
           const podcastData = await response.json();
           return {
             ...podcast,
@@ -42,7 +45,7 @@ const PodcastList = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [sortBy]);
 
   const sortPodcasts = (podcasts, sortBy) => {
     switch (sortBy) {
@@ -146,13 +149,12 @@ const Sidebar = () => (
 const PodcastItem = ({ podcast, handlePodcastClick }) => (
   <div
     className="PodcastItem"
-    onClick={() => handlePodcastClick(null, podcast)}
+    onClick={(event) => handlePodcastClick(event, podcast)}
   >
     <img
       src={podcast.image}
       alt={podcast.title}
       className="PodcastItemImage"
-      onClick={(event) => handlePodcastClick(event, podcast)}
     />
     <div className="PodcastDetails">
       <h3 className="PodcastItemTitle">{podcast.title}</h3>

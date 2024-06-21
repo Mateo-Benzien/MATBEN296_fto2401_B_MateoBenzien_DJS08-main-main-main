@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchPreviews } from '../services/Api';
 import '../App.css';
@@ -10,11 +10,7 @@ const Favorites = () => {
   const [sortBy, setSortBy] = useState('AZ'); // Default sort by A-Z
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchPodcastDetails();
-  }, [sortBy]);
-
-  const fetchPodcastDetails = async () => {
+  const fetchPodcastDetails = useCallback(async () => {
     try {
       const data = await fetchPreviews();
       const podcastDetails = await Promise.all(data.map(fetchPodcastDetail));
@@ -25,7 +21,11 @@ const Favorites = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [sortBy]);
+
+  useEffect(() => {
+    fetchPodcastDetails();
+  }, [fetchPodcastDetails]); // Include fetchPodcastDetails in dependency array
 
   const fetchPodcastDetail = async (podcast) => {
     const response = await fetch(`https://podcast-api.netlify.app/id/${podcast.id}`);
