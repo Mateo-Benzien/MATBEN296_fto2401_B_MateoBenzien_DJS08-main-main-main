@@ -11,13 +11,11 @@ const App = () => {
   const [selectedGenre, setSelectedGenre] = useState('');
 
   const toggleFavorite = ({ podcastId, seasonId, episode }) => {
-    // Implement logic to handle favorites, possibly using localStorage or API
     console.log(`Toggle favorite: ${episode.title}`);
   };
 
   const handleGenreChange = (event) => {
     setSelectedGenre(event.target.value);
-    // You can implement further logic here to filter podcasts based on the selected genre
   };
 
   return (
@@ -36,14 +34,13 @@ const App = () => {
                 <option value="comedy">Comedy</option>
                 <option value="drama">Drama</option>
                 <option value="sci-fi">Sci-Fi</option>
-                {/* Add more genres as needed */}
               </select>
             </div>
           </nav>
         </header>
 
         <Routes>
-          <Route path="/" element={<PodcastLists setCurrentEpisode={setCurrentEpisode} />} />
+          <Route path="/" element={<PodcastLists setCurrentEpisode={setCurrentEpisode} selectedGenre={selectedGenre} />} />
           <Route
             path="/podcast/:id"
             element={<PodcastDetails setCurrentEpisode={setCurrentEpisode} toggleFavorite={toggleFavorite} />}
@@ -51,7 +48,6 @@ const App = () => {
           <Route path="/favorites" element={<Favorites />} />
         </Routes>
 
-        {/* Always render PodcastPlayer */}
         <AudioPlayer currentEpisode={currentEpisode} />
       </div>
     </Router>

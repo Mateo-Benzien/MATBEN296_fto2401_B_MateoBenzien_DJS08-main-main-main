@@ -7,7 +7,7 @@ import '../App.css';
 const Favorites = () => {
   const [podcasts, setPodcasts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState('AZ'); // Default sort by A-Z
+  const [sortBy, setSortBy] = useState('AZ'); 
   const navigate = useNavigate();
 
   const fetchPodcastDetails = useCallback(async () => {
@@ -25,7 +25,7 @@ const Favorites = () => {
 
   useEffect(() => {
     fetchPodcastDetails();
-  }, [fetchPodcastDetails]); // Include fetchPodcastDetails in dependency array
+  }, [fetchPodcastDetails]); 
 
   const fetchPodcastDetail = async (podcast) => {
     const response = await fetch(`https://podcast-api.netlify.app/id/${podcast.id}`);
@@ -58,7 +58,7 @@ const Favorites = () => {
   };
 
   const handleEpisodeClick = (event, podcastId, seasonId, episodeId) => {
-    event.stopPropagation(); // Prevents bubbling up to div click
+    event.stopPropagation(); 
     navigate(`/podcast/${podcastId}/season/${seasonId}/episode/${episodeId}`);
   };
 

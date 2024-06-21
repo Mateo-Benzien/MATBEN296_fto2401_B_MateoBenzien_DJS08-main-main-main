@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../App.css'; // Adjust the path accordingly
+import '../App.css'; 
 
 const AudioPlayer = ({ currentEpisode: propCurrentEpisode }) => {
   const [shows, setShows] = useState([]);
@@ -9,7 +9,7 @@ const AudioPlayer = ({ currentEpisode: propCurrentEpisode }) => {
   const [paused, setPaused] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [audioPlaying, setAudioPlaying] = useState(false); // State to track if audio is playing
+  const [audioPlaying, setAudioPlaying] = useState(false); 
 
   useEffect(() => {
     const fetchShows = async () => {
@@ -42,7 +42,7 @@ const AudioPlayer = ({ currentEpisode: propCurrentEpisode }) => {
         setDuration(audioElement.duration);
       });
 
-      // Set state for audio playing or paused
+      
       audioElement.addEventListener('play', () => setAudioPlaying(true));
       audioElement.addEventListener('pause', () => setAudioPlaying(false));
     }
@@ -63,7 +63,7 @@ const AudioPlayer = ({ currentEpisode: propCurrentEpisode }) => {
     }
   }, [propCurrentEpisode]);
 
-  // Function to update the current time of the audio
+  
   const updateTime = () => {
     const audioElement = document.getElementById('audio-element');
     if (audioElement) {
@@ -149,13 +149,13 @@ const AudioPlayer = ({ currentEpisode: propCurrentEpisode }) => {
     }
   };
 
-  // Prompt user before leaving the page if audio is playing
+  
   useEffect(() => {
     const handleBeforeUnload = (event) => {
       if (audioPlaying) {
         const confirmationMessage = 'Are you sure you want to leave? Your audio is still playing.';
-        event.returnValue = confirmationMessage; // Standard way of setting confirmation message in most browsers
-        return confirmationMessage; // Required for some browsers
+        event.returnValue = confirmationMessage; 
+        return confirmationMessage; 
       }
     };
 
