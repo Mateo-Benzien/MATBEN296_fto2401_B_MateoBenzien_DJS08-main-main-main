@@ -10,33 +10,32 @@ const Favorites = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchPodcastDetails = async () => {
-      try {
-        const data = await fetchPreviews();
-        const podcastDetails = await Promise.all(
-          data.map(async (podcast) => {
-            const response = await fetch(`https://podcast-api.netlify.app/id/${podcast.id}`);
-            const podcastData = await response.json();
-            return {
-              ...podcast,
-              seasons: podcastData.seasons || [], // Updated to store all seasons
-              genres: podcastData.genres || [],
-              episodes: podcastData.episodes || [], // Include episodes data
-            };
-          })
-        );
-
-        const sortedPodcasts = sortPodcasts(podcastDetails, sortBy);
-        setPodcasts(sortedPodcasts);
-      } catch (error) {
-        console.error('Error fetching podcast details:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPodcastDetails();
   }, [sortBy]);
+
+  const fetchPodcastDetails = async () => {
+    try {
+      const data = await fetchPreviews();
+      const podcastDetails = await Promise.all(data.map(fetchPodcastDetail));
+      const sortedPodcasts = sortPodcasts(podcastDetails, sortBy);
+      setPodcasts(sortedPodcasts);
+    } catch (error) {
+      console.error('Error fetching podcast details:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchPodcastDetail = async (podcast) => {
+    const response = await fetch(`https://podcast-api.netlify.app/id/${podcast.id}`);
+    const podcastData = await response.json();
+    return {
+      ...podcast,
+      seasons: podcastData.seasons || [],
+      genres: podcastData.genres || [],
+      episodes: podcastData.episodes || [],
+    };
+  };
 
   const sortPodcasts = (podcasts, sortBy) => {
     switch (sortBy) {
@@ -79,62 +78,110 @@ const Favorites = () => {
 
   return (
     <div className="App">
-      <div className="Sidebar">
-        <Link to="/" className="SidebarLink">Home</Link>
-        <Link to="/favorites" className="SidebarLink">Favorites</Link>
-      </div>
+      <Sidebar />
       <div className="MainContent">
-        <div className="PodcastListContainer">
-          <h2>Favorite Podcasts</h2>
-          <div className="SortOptions">
-            <label htmlFor="sortBy">Sort By:</label>
-            <select id="sortBy" value={sortBy} onChange={handleSortChange}>
-              <option value="AZ">Title A-Z</option>
-              <option value="ZA">Title Z-A</option>
-              <option value="NEW">Newly Updated Shows</option>
-              <option value="OLD">Oldest Updated Shows</option>
-            </select>
-          </div>
-          <div className="PodcastList">
-            {podcasts.map((podcast) => (
-              <div key={podcast.id} className="PodcastItem">
-                <h3 className="PodcastItemTitle">{podcast.title}</h3>
-                <div className="PodcastItemSeasons">
-                  {podcast.seasons.map((season) => (
-                    <div key={season.id} className="SeasonItem">
-                      <h4 className="SeasonTitle">Season {season.number}</h4>
-                      <ul className="EpisodeList">
-                        {season.episodes.map((episode) => (
-                          <li key={episode.id} className="EpisodeItem">
-                            <span>{episode.title}</span>
-                            <button
-                              className={`FavoriteButton ${episode.isFavorite ? 'favorited' : ''}`}
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                toggleFavorite(podcast.id, episode.id);
-                              }}
-                            >
-                              {episode.isFavorite ? 'Remove Favorite' : 'Add Favorite'}
-                            </button>
-                            <button
-                              className="ViewButton"
-                              onClick={(event) => handleEpisodeClick(event, podcast.id, season.id, episode.id)}
-                            >
-                              View
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <PodcastList
+          podcasts={podcasts}
+          sortBy={sortBy}
+          handleSortChange={handleSortChange}
+          handleEpisodeClick={handleEpisodeClick}
+          toggleFavorite={toggleFavorite}
+        />
       </div>
     </div>
   );
 };
+
+const Sidebar = () => (
+  <div className="Sidebar">
+    <Link to="/" className="SidebarLink">Home</Link>
+    <Link to="/favorites" className="SidebarLink">Favorites</Link>
+  </div>
+);
+
+const PodcastList = ({ podcasts, sortBy, handleSortChange, handleEpisodeClick, toggleFavorite }) => (
+  <div className="PodcastListContainer">
+    <h2>Favorite Podcasts</h2>
+    <SortOptions sortBy={sortBy} handleSortChange={handleSortChange} />
+    <div className="PodcastList">
+      {podcasts.map((podcast) => (
+        <PodcastItem
+          key={podcast.id}
+          podcast={podcast}
+          handleEpisodeClick={handleEpisodeClick}
+          toggleFavorite={toggleFavorite}
+        />
+      ))}
+    </div>
+  </div>
+);
+
+const SortOptions = ({ sortBy, handleSortChange }) => (
+  <div className="SortOptions">
+    <label htmlFor="sortBy">Sort By:</label>
+    <select id="sortBy" value={sortBy} onChange={handleSortChange}>
+      <option value="AZ">Title A-Z</option>
+      <option value="ZA">Title Z-A</option>
+      <option value="NEW">Newly Updated Shows</option>
+      <option value="OLD">Oldest Updated Shows</option>
+    </select>
+  </div>
+);
+
+const PodcastItem = ({ podcast, handleEpisodeClick, toggleFavorite }) => (
+  <div className="PodcastItem">
+    <h3 className="PodcastItemTitle">{podcast.title}</h3>
+    <div className="PodcastItemSeasons">
+      {podcast.seasons.map((season) => (
+        <SeasonItem
+          key={season.id}
+          season={season}
+          podcastId={podcast.id}
+          handleEpisodeClick={handleEpisodeClick}
+          toggleFavorite={toggleFavorite}
+        />
+      ))}
+    </div>
+  </div>
+);
+
+const SeasonItem = ({ season, podcastId, handleEpisodeClick, toggleFavorite }) => (
+  <div className="SeasonItem">
+    <h4 className="SeasonTitle">Season {season.number}</h4>
+    <ul className="EpisodeList">
+      {season.episodes.map((episode) => (
+        <EpisodeItem
+          key={episode.id}
+          episode={episode}
+          podcastId={podcastId}
+          seasonId={season.id}
+          handleEpisodeClick={handleEpisodeClick}
+          toggleFavorite={toggleFavorite}
+        />
+      ))}
+    </ul>
+  </div>
+);
+
+const EpisodeItem = ({ episode, podcastId, seasonId, handleEpisodeClick, toggleFavorite }) => (
+  <li className="EpisodeItem">
+    <span>{episode.title}</span>
+    <button
+      className={`FavoriteButton ${episode.isFavorite ? 'favorited' : ''}`}
+      onClick={(event) => {
+        event.stopPropagation();
+        toggleFavorite(podcastId, episode.id);
+      }}
+    >
+      {episode.isFavorite ? 'Remove Favorite' : 'Add Favorite'}
+    </button>
+    <button
+      className="ViewButton"
+      onClick={(event) => handleEpisodeClick(event, podcastId, seasonId, episode.id)}
+    >
+      View
+    </button>
+  </li>
+);
 
 export default Favorites;

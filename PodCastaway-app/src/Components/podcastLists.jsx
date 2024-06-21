@@ -9,39 +9,39 @@ import '../App.css';
 const PodcastList = () => {
   const [podcasts, setPodcasts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState('AZ'); // Default sort by A-Z
+  const [sortBy, setSortBy] = useState('AZ');
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredPodcasts, setFilteredPodcasts] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchPodcastDetails = async () => {
-      try {
-        const data = await fetchPreviews();
-        const podcastDetails = await Promise.all(
-          data.map(async (podcast) => {
-            const response = await fetch(`https://podcast-api.netlify.app/id/${podcast.id}`);
-            const podcastData = await response.json();
-            return {
-              ...podcast,
-              seasons: podcastData.seasons.length,
-              genres: podcastData.genres || [],
-            };
-          })
-        );
-
-        const sortedPodcasts = sortPodcasts(podcastDetails, sortBy);
-        setPodcasts(sortedPodcasts);
-        setFilteredPodcasts(sortedPodcasts); // Initially set filteredPodcasts to all podcasts
-      } catch (error) {
-        console.error('Error fetching podcast details:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPodcastDetails();
   }, [sortBy]);
+
+  const fetchPodcastDetails = async () => {
+    try {
+      const data = await fetchPreviews();
+      const podcastDetails = await Promise.all(
+        data.map(async (podcast) => {
+          const response = await fetch(`https://podcast-api.netlify.app/id/${podcast.id}`);
+          const podcastData = await response.json();
+          return {
+            ...podcast,
+            seasons: podcastData.seasons.length,
+            genres: podcastData.genres || [],
+          };
+        })
+      );
+
+      const sortedPodcasts = sortPodcasts(podcastDetails, sortBy);
+      setPodcasts(sortedPodcasts);
+      setFilteredPodcasts(sortedPodcasts);
+    } catch (error) {
+      console.error('Error fetching podcast details:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const sortPodcasts = (podcasts, sortBy) => {
     switch (sortBy) {
@@ -75,7 +75,7 @@ const PodcastList = () => {
   };
 
   const handlePodcastClick = (event, podcast) => {
-    event.stopPropagation(); // Stop event from bubbling up to parent div
+    event.stopPropagation();
     navigate(`/podcast/${podcast.id}`);
   };
 
@@ -83,10 +83,8 @@ const PodcastList = () => {
     return <div>Loading...</div>;
   }
 
-  // Selected podcasts for carousel
-  const selectedPodcasts = filteredPodcasts.slice(0, 5); // Adjust as needed
+  const selectedPodcasts = filteredPodcasts.slice(0, 5);
 
-  // Settings for react-slick carousel
   const carouselSettings = {
     dots: true,
     infinite: true,
@@ -99,82 +97,36 @@ const PodcastList = () => {
 
   return (
     <div className="App">
-      <div className="Sidebar">
-        <Link to="/" className="SidebarLink">Home</Link>
-        <Link to="/favorites" className="SidebarLink">Favorites</Link>
-      </div>
+      <Sidebar />
       <div className="MainContent">
         <div className="PodcastListContainer">
           <h2>Featured Podcasts</h2>
           <Slider {...carouselSettings}>
             {selectedPodcasts.map((podcast) => (
-              <div
+              <PodcastItem
                 key={podcast.id}
-                className="PodcastItem"
-                onClick={() => navigate(`/podcast/${podcast.id}`)} // Directly navigate from the div
-              >
-                <img
-                  src={podcast.image}
-                  alt={podcast.title}
-                  className="PodcastItemImage"
-                  onClick={(event) => handlePodcastClick(event, podcast)} // Pass event and podcast to handler
-                />
-                <div className="PodcastDetails">
-                  <h3 className="PodcastItemTitle">{podcast.title}</h3>
-                  <p className="PodcastItemSeasons">Seasons: {podcast.seasons}</p>
-                  <p className="PodcastItemGenres">
-                    Genres: {podcast.genres.length > 0 ? podcast.genres.join(', ') : 'N/A'}
-                  </p>
-                </div>
-              </div>
+                podcast={podcast}
+                handlePodcastClick={handlePodcastClick}
+              />
             ))}
           </Slider>
 
           <hr />
 
           <h2>All Podcasts</h2>
-          <div className="FilterAndSearch">
-            <div className="SortOptions">
-              <label htmlFor="sortBy">Sort By:</label>
-              <select id="sortBy" value={sortBy} onChange={handleSortChange}>
-                <option value="AZ">Title A-Z</option>
-                <option value="ZA">Title Z-A</option>
-                <option value="NEW">Newly Updated Shows</option>
-                <option value="OLD">Oldest Updated Shows</option>
-              </select>
-            </div>
-            <div className="SearchBar">
-              <label htmlFor="searchInput">Search :</label>
-              <input
-                type="text"
-                id="searchInput"
-                placeholder="Search podcasts..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-            </div>
-          </div>
+          <FilterAndSearch
+            sortBy={sortBy}
+            handleSortChange={handleSortChange}
+            searchTerm={searchTerm}
+            handleSearchChange={handleSearchChange}
+          />
           <div className="PodcastList">
             {filteredPodcasts.map((podcast) => (
-              <div
+              <PodcastItem
                 key={podcast.id}
-                className="PodcastItem"
-                onClick={() => navigate(`/podcast/${podcast.id}`)} // Directly navigate from the div
-              >
-                <img
-                  src={podcast.image}
-                  alt={podcast.title}
-                  className="PodcastItemImage"
-                  onClick={(event) => handlePodcastClick(event, podcast)} // Pass event and podcast to handler
-                />
-                <div className="PodcastDetails">
-                  <h3 className="PodcastItemTitle">{podcast.title}</h3>
-                  <p className="PodcastItemSeasons">Seasons: {podcast.seasons}</p>
-                  <p className="PodcastItemGenres">
-                    Genres: {podcast.genres.length > 0 ? podcast.genres.join(', ') : 'N/A'}
-                  </p>
-                </div>
-              </div>
+                podcast={podcast}
+                handlePodcastClick={handlePodcastClick}
+              />
             ))}
           </div>
         </div>
@@ -182,5 +134,57 @@ const PodcastList = () => {
     </div>
   );
 };
+
+const Sidebar = () => (
+  <div className="Sidebar">
+    <Link to="/" className="SidebarLink">Home</Link>
+    <Link to="/favorites" className="SidebarLink">Favorites</Link>
+  </div>
+);
+
+const PodcastItem = ({ podcast, handlePodcastClick }) => (
+  <div
+    className="PodcastItem"
+    onClick={() => handlePodcastClick(null, podcast)}
+  >
+    <img
+      src={podcast.image}
+      alt={podcast.title}
+      className="PodcastItemImage"
+      onClick={(event) => handlePodcastClick(event, podcast)}
+    />
+    <div className="PodcastDetails">
+      <h3 className="PodcastItemTitle">{podcast.title}</h3>
+      <p className="PodcastItemSeasons">Seasons: {podcast.seasons}</p>
+      <p className="PodcastItemGenres">
+        Genres: {podcast.genres.length > 0 ? podcast.genres.join(', ') : 'N/A'}
+      </p>
+    </div>
+  </div>
+);
+
+const FilterAndSearch = ({ sortBy, handleSortChange, searchTerm, handleSearchChange }) => (
+  <div className="FilterAndSearch">
+    <div className="SortOptions">
+      <label htmlFor="sortBy">Sort By:</label>
+      <select id="sortBy" value={sortBy} onChange={handleSortChange}>
+        <option value="AZ">Title A-Z</option>
+        <option value="ZA">Title Z-A</option>
+        <option value="NEW">Newly Updated Shows</option>
+        <option value="OLD">Oldest Updated Shows</option>
+      </select>
+    </div>
+    <div className="SearchBar">
+      <label htmlFor="searchInput">Search :</label>
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search podcasts..."
+        value={searchTerm}
+        onChange={handleSearchChange}
+      />
+    </div>
+  </div>
+);
 
 export default PodcastList;
